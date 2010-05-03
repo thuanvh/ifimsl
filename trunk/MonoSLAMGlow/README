@@ -1,0 +1,517 @@
+MonoSLAMGlow README
+-------------------
+
+Andrew Davison
+ajd@doc.ic.ac.uk
+
+This file gives hopefully a complete set of instructions for
+installing and running the example application MonoSLAMGlow which uses
+the SceneLib libraries for real-time SLAM.
+
+Contents:
+1.  Requirements
+2.  Installation steps
+3.  Running in offline mode
+4.  Compiling for real-time mode
+5.  Firewire cameras
+6.  Running in real-time mode
+7.  Configuration files
+8.  Changing the map of known features
+9.  Using monoslam to save an image sequence
+10. Motion model parameters
+11. Outputting tracking results as an image sequence and movie
+
+Requirements 
+------------
+
+At this point we assume a modern Linux distribution with standard
+programming tools installed, e.g. Fedora, Suse or Debian as long as
+you selected development packages during installation. In addition
+you'll need:
+
+- OpenGL --- some version should be available on most platforms, but for
+  real-time or fast operation we strongly recommend getting drivers
+  from your graphics card manufacturer which run an X server with 
+  hardware 3D acceleration (e.g. www.nvidia.com or www.ati.com) which
+  nowadays are easy to install. With the NVidia driver an NVidia
+  splash screen comes up when you start X windows if you have it
+  correctly installed. 
+- Glut --- software extension to OpenGL. Probably installed as
+  standard. Sometimes found in the freeglut package (e.g. Fedora Core
+  4). Try 'rpm -qa | grep glut' to see what you have got on an
+  RPM-based system. Also download and install the relevant -devel
+  package. E.g. on Fedora Core 4 I have the RPMs freeglut-2.2.0-16
+  and freeglut-devel-2.2.0-16 (other versions should be fine).
+- Pthread --- multithreading library (should be standard)
+
+
+And if you will use a live camera:
+
+- libraw1394 (standard in most distributions unless you specifically 
+  installed without Firewire support). You should make sure you also
+  have the -devel package (e.g. on Fedora Core 4 I have the RPMs
+  libraw1394-1.1.0-3 and libraw1394-devel-1.1.0-3 but any recent version 
+  should be OK). This should be available on the distribution CDROM
+  or from their website.
+- libdc1394 --- Firewire camera control library. This is not a standard
+  package in most Linux distributions.
+  Download from http://sourceforge.net/projects/libdc1394/ and follow
+  installation instructions. Note that as far as I know at the moment,
+  the new version 2.* of this will not work with VW and our other software
+  so get the older version (the latest 1.* you can find).
+
+Note that on distributions like Fedora Core 5 or Ubuntu/Debian,
+package management is now very well organised and it should be
+straightforward to install everything you need with graphical or other
+tools like yum (Fedora) or apt-get (Debian). Extras repositories like
+livna or atrpms can often supply libraries like libdc1394 which are
+not in the main distributions. Note that if you install libdc1394 from
+packages rather than source you should also get libdc1394-devel.
+
+
+Installation steps
+------------------
+
+1. Download these tarfiles from the Scene homepage.
+
+	vw34.tar.gz
+	scenelib.tar.gz
+	glow_104.tar.gz
+	monoslamglow.tar.gz
+	testseqmonoslam.tar.gz
+
+2. Each of these should be unpacked with the command:
+
+	tar xvfz *.tar.gz
+
+to create the following directories which by default should be at the
+same level (they will look for each other):
+
+glow_104/  MonoSLAMGlow/  TestSeqMonoSLAM/  SceneLib/  VW34/
+
+3. Compile GLOW (open source C++ widget toolkit using GLUT by Daniel Azuma). 
+
+GLOW is an GUI toolkit built on OpenGL and Glut which is much simpler
+than alternatives such as Gtk or Qt, but is in full C++, is
+well-designed and is quite easy to use. The main reason I have chosen
+it for our MonoSLAMGlow example application is that it is supremely
+portable and seems to compile easily on almost any system. (Note that
+we have gone to a lot of effort to separate the GUI dependence from
+all the code which actually does the work in SceneLib and it would be
+straightforward to substitute another GUI of your choice.)
+
+	cd glow_104
+	cd glow_src
+	make
+	ln -s libglow.a.1.0.2 libglow.a
+
+Note that to get glow to compile on Fedora Core 5, in the version
+available on the Scene Homepage I have removed glowViewTransform from
+glow-104/glow_src/Makefile. This removes some functionality from GLOW
+which we do not use in MonoSLAMGlow.
+
+The GLOW headers and library files will be left in the glow_src/
+directory by this compilation --- our other programs should look for
+them there.  
+
+For documentation on GLOW, point your browser at
+glow_104/tutorial/index.html  For tutorial programs, go to
+glow_104/tutorial/lesson* and in each of those directories type
+make. The documentation and tutorials are very good.
+Or see the GLOW homepage at http://glow.sourceforge.net/
+
+4. Compile VW34 (Oxford Active Vision Lab libraries)
+
+Look at VW34/README for instructions on compiling. It uses a configure
+script but at the time of writing this was not perfected so check the
+README. Also remember to type 'make install' after 'make' --- this
+does not attempt a system-wide install but copies libraries and
+headers to VW34/include and VW34/lib which is where other programs
+will look for them. Almost certainly the following will be all you
+need to do to compile VW34:
+
+	./bootstrap
+	./configure
+	make
+	make install
+
+After configure you will be able to see which libraries within VW have
+been selected for compilation based on the supporting libraries which
+have been found. To run MonoSLAMGlow you will only need to see yes for
+libVNL.a, libVW.a, libVWGL.a and libVWGLOW.a, and additionally
+libVWFirewire.a if you plan to use a live camera.
+
+(One problem with compiling VW34 may arise if you do not have recent
+versions of automake and autoconf installed --- e.g. on Fedora Core 4 I
+have version 1.9. of automake)
+
+Note that VW (and all other code here) should be compiled with
+optimisation if you are planning to run in real-time. I think this
+should happen by default when you compile VW (check that -O2 or -O3
+appears in the flags to g++ during compilation). If not, when you run
+configure you can use:
+
+	configure CFLAGS=-O3
+
+to force this. (Note that the case in which you would want to compile
+without optimisation is if you want to run a debugger on the code.)
+
+VW is a set of related modules which compiles to several
+libraries. Some of these depend on external libraries or support
+particular hardware and are split up so that you need only require
+what is needed. If you follow the instructions in VW34/README you
+should automatically be able to compile as many of these as your
+system will support. To compile MonoSLAMGlow, you only need the
+following VW libraries:
+
+	VNL	: VW-ised version of the vnl numerics library from vxl
+	VW	: Core VW library with image classes, geometry, etc.
+	VWGL	: OpenGL displays and interfaces
+	VWGLOW	: Support for Glow interface
+
+And if you will use a live firewire camera:
+	VWFirewire	: Firewire camera support
+
+You can check that these libraries have compiled by looking for
+appropriate library files in VW34/lib/ (remember to do 'make install' 
+after 'make').
+
+VW34 has API documentation which can be generated automatically from
+the source code and viewed with a web brower. Enter the directory
+VW34/Docs and type:
+
+	make SourceRef
+
+then point your browser at VW34/Docs/HTML/index.html
+
+Note that actually SceneLib and MonoSLAMGlow use rather little of the
+wide array of functionality provided by VW. The parts it really uses
+are VNL (for matrix maths), the image class, firewire/file image
+sequencers and OpenGL displays and interfaces. Some of the things in
+VW like feature detection and Kalman Filter are duplicated and done in
+a slightly different way in SceneLib (though perhaps these will be
+unified in the future).
+
+5. Compile SceneLib (SLAM library):
+
+This has a standard configure script thanks to Paul Smith. See
+SceneLib/INSTALL for more detailed instructions. Particularly use
+the switch --enable-optimisation=full with configure if you want to
+run in real-time.
+
+	cd SceneLib
+	./configure
+	make
+	make install
+
+Note that as with VW, 'make install' is a local install into
+SceneLib/include and SceneLib/lib so it must be done.
+
+SceneLib has some documentation in the form of a LaTeX document mainly
+about the `model' classes for specifying robot and sensor specifics,
+the README file in the root SceneLib/ directory, and
+automatically-generated API documentation (thanks again to Paul Smith
+for this) which can be generated by typing `make docs' in the main
+SceneLib/ directory. After this point a web browser at
+SceneLib/html/index.html
+
+Also like VW, SceneLib compiles to several different libraries:
+
+	Scene		: Core SLAM library 
+	SceneImproc	: Some image processing functions
+	MonoSLAM	: Specific support for single camera SLAM
+
+6. Compile MonoSLAMGlow (front end for MonoSLAM single camera SLAM)
+
+You can compile this in two modes: off-line (where the images come from
+a file sequence) and real-time (where they come from a firewire
+camera). Type:
+
+	cd MonoSLAMGlow
+	make
+
+to make the executable program monoslam.
+
+By default the Makefile should be set to off-line mode. Look at
+MonoSLAMGlow/Makefile and uncomment -D_REALTIME_ if you want to
+compile for real-time mode (note that after changing the Makefile you
+should type 'make clean' before 'make' to make sure that the change
+takes effect).
+
+Note that if you want to compile the off-line mode on a machine
+without firewire libraries installed then the compilation will fail
+because the firewire libraries won't be found. To fix this:
+- Remove -lVWFirewire from the line defining VWLIBS
+- Remove $(FIREWIRELIBS) from the line defining LINKFLAGS
+in MonoSLAMGlow/Makefile.
+
+
+Running in offline mode
+-----------------------
+
+1. TestSeqMonoSLAM is a test sequence of images in pgm format and
+the simulation version of monoslam will look for this by default.
+(This can be changed in monoslamglow.cpp).
+
+2. Run './monoslam' from the MonoSLAMGlow directory. Two windows should
+come up: a main one with two displays (external 3D view and internal
+image view) and control buttons, and a small one called "File
+Sequencer". 
+
+Clicking "Next" on the sequencer will bring in the next image from the
+file sequence in TestSeqMonoSLAM. If before hitting "Next" you toggle
+the "Toggle Tracking" checkbutton then the new image will be tracked.
+The 3D tool display can be dragged (left button = rotate, middle =
+horizontal translate, right = depth translate). Other buttons are
+hopefully self-explanatory!
+
+Note that the feature matching in the current version of monoslam is
+plain template matching with no pre-warping so the performance is not
+as good as in some of the videos you may have seen
+(e.g. kitchen.mp4.avi available from my website which does full patch
+warping to permit better feature matching as explained in the paper
+"Locally Planar Patch Features for Real-Time Structure from Motion",
+Molton, Davison, Reid, BMVC 2004).
+
+Compiling for real-time mode
+----------------------------
+
+As noted before, to compile in real-time mode with a firewire camera
+uncomment the -D_REALTIME_ flag from MonoSLAMGlow/Makefile. Do:
+	make clean
+	make
+After changing the Makefile to make sure everything compiles
+correctly. Also make sure optimisation is turned on (look for the -O3
+flag in CFLAGS).
+
+You will need an initialisation target. There is a postscript file
+target_ismar.eps in MonoSLAMGlow/ which can be printed out (if this
+does not work, the standard definition we use is an A5 black rectangle
+(21cm * 14.85cm) on a white background). 
+
+You will also need to calibrate your camera and set the right
+parameters in monoslam_state.ini . The current parameters are for the
+Unibrain Fire-i board camera (wide angle version). These cameras are
+very good and cheap and can be obtained from www.unibrain.com.
+
+Firewire cameras
+----------------
+
+To use firewire, plug in the hub, connect it to the computer and the
+camera, then su to root and run:
+
+reset_firewire.sh    (a copy of this script is in the MonoSLAMGlow/
+                      directory)
+
+This loads the right kernel modules, etc. Note that this script may
+need changing somewhat for different Linux distributions, particularly
+since the namess of 1394 device files tend to change. VWFirewire will
+look for the video1394 device at /dev/video1394/0
+
+Normally, you only need to run reset_firewire.sh once after you boot
+the computer but sometimes, if firewire doesn't work, you can get it
+going by disconnecting the hub from the computer, running
+reset_firewire.sh again, and then plugging the camera in
+again. Occasionally you might need to do this a few times.
+
+The program "gscanbus" (find it with google) should show what is
+connected to the firewire bus so you can check it has found your
+camera.
+
+You can also try the program "coriander" (google for it), a test
+program for IEEE1394 cameras which can be used to grab image sequences
+and test different camera modes, etc.
+
+If you use a different camera, you will need to calibrate you camera
+and change the calibration parameters MonoSLAMGlow will use in the
+file MonoSLAMGlow/monoslam_state.ini
+[UNIBRAIN_WIDE_CAMERA]
+CameraParameters=320 240 162 125 195 195 9e-06 1
+These parameters are image size (320 240), principal point (162 125),
+horizontal and vertical focal lengths in pixels (195 195), distortion
+coefficient (9e-06), measurement uncertainty (1).
+
+
+Running in real-time mode
+-------------------------
+
+If real-time mode, hit "Continuous" from the sequencer window first to
+start image capture (having of course connected a camera and done
+"reset_firewire"), then point it at one of my initialisation targets
+(available as a postscript file target_ismar.eps in MonoSLAMGlow),
+lining up the four corners, and then "Toggle Tracking" to start
+tracking.
+
+By default run the program directly from the MonoSLAMGlow directory by
+typing:
+	monoslam
+
+Note that monoslam will read configuration files from your current
+directory.
+
+You get some messages telling you that the camera has been detected
+properly (check that the framerate says 30fps and the Mode is 640x480
+MONO --- inside the program (scenecontrolgtk.cc) this is
+colour-processed and subsampled down to 320x240).
+
+The code in MonoSLAMGlow (and also SceneLib) usually has flags at the
+top of each source file which can be set if you want various system
+information to be output to your terminal. Set the DEBUGDUMP flag to
+true in a source file (and recompile) to output much information which
+is probably only useful if you suspect a bug. A single flag
+Scene_Single::STATUSDUMP can be set to provide more generally useful
+output on system operation including processing timings. This flag is
+set in SceneLib/scene_single.cpp
+
+The downside of outputting information to a terminal is that it can
+use up a lot of processing time in real-time mode. A tip is to run
+from an ordinary xterm (run "xterm") rather than a gnome or other
+fancy terminal because the simple terminal has less overhead. A useful
+way to debug or check on real-time operation is to output status or
+debugging information to a file like this:
+
+	monoslam &> data
+
+If you have the program compiled to output information but don't
+currently need it you can avoid overhead by just dumping it into the
+void as follows:
+
+	monoslam &> /dev/null
+
+
+
+Configuration files
+-------------------
+
+At startup monoslam will read a configuration file from your current
+directory. If you want to change the configuration files, you can copy
+them to another directory and make edits then run monoslam from there
+by specifying the full or relative path; e.g.:
+
+../MonoSLAMGlow/monoslam
+
+monoslam_state.ini 
+
+Text file specifying the much configuration information, including
+which models to use (motion model and camera model), camera
+calibration parameters, initial state of the camera in the world
+coordinate frame (this is the camera state vector (13 parameters) plus
+the associated 13*13 covariance matrix specifying the uncertainty in
+this). Also specifies the known features (currently the corners of our
+initialisation target though these can easily be changed).  These
+features go into the map with zero uncertainty --- and therefore
+define the coordinate system. Each has 3 parameters to specify the 3D
+position of the feature, plus seven parameters which represent the
+position state of the camera from which that feature was initialised
+(and is optimally viewable). This is used in predicting whether each
+feature will be measurable from a particular viewpoint.
+
+known_patch*.pgm
+
+Numbered files containing image patches identifying each of the features.
+
+
+
+Changing the map of known features
+----------------------------------
+
+When running the program (in realtime or file mode) if you click on
+the image you will see a green box of the size of an image patch. If
+you click "Save patch" the part of the image currently inside this box
+will be saved to the file "patch.pgm". 
+
+The file monoslam_state.ini contains a list of the known features. To
+change a known feature edit this file and copy patch.pgm to
+"known_patch*.pgm". In monoslam_state.ini the yi entry for each
+KnownFeature has the 3D position of the feature (x, y, z) in the world
+coordinate system. xp_orig has the position (x, y, z) and
+orientation (quaternion) of the camera position where this feature was
+initialised (though if the camera is only moving a small distance is
+it OK to have these all the same).  These values control whether we
+will try to measure features from certain camera positions: we don't
+try to measure is the camera has moved too far from where a feature is
+initialised. Therefore if you are moving the camera a long way you
+should have some features which are initialised from different places
+and change the values in this file.
+
+Using the program to save an image sequence
+-------------------------------------------
+
+In real-time mode you can use monoslam just as an image grabber to
+save plain image sequences to process later offline.
+
+Click "Continuous" to start image grabbing. Line the camera up so that
+the known features are in the right place (nearly) to start
+with. Then, click the button "Output Raw Images". This will start
+saving an image sequence in the current directory rawoutput*.pgm (make
+sure you have moved any earlier sequences to another directory or this
+will overwrite them).  The display is turned off during this mode to
+try to avoid missed frames (though there still seem to be some).
+When you have finished moving the camera click "stop" to stop the
+grabbing and quit the program to check the sequence. You should get
+30fps so try again if there are fewer images than this for some reason.
+
+gqview is a good program for looking at the image sequence (just run
+"gqview" and it loads all the images in a directory). Or you can use
+"animate *.pgm" to view a sequence as an animation (watch out if you
+have a lot of images because it could take ages to read them all into
+memory). 
+
+If you suspect there are missed frames (i.e. if there are big jumps
+between some images), you can check the data file: it reports the
+absolute time when each frame was grabbed so you can check the gaps
+between them are 1/30 of a second.
+
+
+Motion model parameters
+-----------------------
+
+These set how agile the camera motion is expected to be. In the file
+SceneLib/MonoSLAM/models_impulse.h you can change:
+
+  // Standard deviation of linear acceleration
+  static const double SD_A_component_filter = 4.0; // m s^-2
+  // Standard deviation of angular acceleration
+  static const double SD_alpha_component_filter = 6.0;  // rad s^-2
+
+These are quite high values, for quite fast motion. 
+
+
+Outputting tracking results as an image sequence and movie
+----------------------------------------------------------
+
+To output the graphical image displays with the graphics options you
+have chosen you have chosen, select the "Output Tracked Images"
+toggle. On each subsequent step an image will be formed by stitching
+together the two display views. This will produce an image sequence
+composite*.ppm of colour images which can be turned into an MPEG. This
+really only works well in offline mode processing an image sequence
+because the overhead for writing images to disk is high and it will
+cause dropped frames in the real-time case. In offline mode, make sure
+you click through "next" with the mouse slowly enough so that every
+image gets propoerly displayed because the file is written by copying
+exactly what is on the screen from OpenGL --- or to automate this,
+make sure that the rate that images is read in when the "Continuous"
+button is hit is low enough by using the grabber->SetDelay() command
+in monoslamglow.cpp (this sets the time to wait between images in
+milliseconds --- a minimum of 200ms is recommended when outputting
+tracked images).
+
+To make an MPEG movie from an image sequence I use the program
+"mpeg_encode". This is probably not installed on your system by
+default but should be easy to find on the web (try www.rpmfind.net or
+google). 
+
+A sample configuration file mpeg.param for mpeg_encode is provided in
+MonoSLAMGlow/.  cd to the directory with the output*.ppm images in.
+Copy the file mpeg.param to this directory and edit it: the only thing
+you need to do is in the INPUT section: check that the file name is
+right (it should be by default) and put the right range in for the
+images you want to turn into a movie. Then just run:
+
+mpeg_encode mpeg.param
+
+This should take just a minute or two.
+
+You can play the mpeg with most movie players; under Linux use xine or
+mplayer.

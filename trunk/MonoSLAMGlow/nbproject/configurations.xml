@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="MonoSLAMGlow" root=".">
+      <in>mainglow.cpp</in>
+      <in>mainglow.h</in>
+      <in>monoslamglow.cpp</in>
+      <in>monoslamglow.h</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>Makefile-MonoSLAMGlow.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-MonoSLAMGlow.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>$(MAKE) -f Makefile</buildCommand>
+          <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <ccTool>
+            <incDir>
+              <pElem>../glow_104/glow_src</pElem>
+              <pElem>../VW34/include</pElem>
+              <pElem>../SceneLib/include</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>Linux</Elem>
+              <Elem>_REENTRANT</Elem>
+            </preprocessorList>
+          </ccTool>
+        </makeTool>
+      </makefileType>
+      <item path="mainglow.h" ex="true" tool="3">
+      </item>
+      <item path="monoslamglow.cpp" ex="true" tool="1">
+      </item>
+      <item path="monoslamglow.h" ex="true" tool="3">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
