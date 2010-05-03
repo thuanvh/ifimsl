@@ -1,0 +1,5 @@
+MonoSLAMGlow::SetUpMonoSLAM()
+    Changed to use new MonoSLAMInterface constructor.
+MonoSLAMGlow::SetUpMonoSLAM()
+MonoSLAMGlow::SetUp3DDisplays()
+    Now get the image size and the camera calibration parameters via the camera model    
