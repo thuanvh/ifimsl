@@ -1,0 +1,8 @@
+Each major source code directory within VW compiles to a different
+library, and contains a file COPYING which specifies the terms under
+which the library may be used and copied.
+
+The VNL directory contains code derived from the VXL project and has a
+special license (see VNL/COPYING). All other directories contain code
+licensed under the GNU Lesser Public License (LGPL) --- see for
+instance VW/COPYING.
