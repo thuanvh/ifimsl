@@ -1,0 +1,3 @@
+glowUtilities.o glowUtilities.dep: glowUtilities.cpp glowHeader.h glowUtilities.h glow.h \
+ glowSenderReceiver.h glowSenderReceiver.inl.h glowDebug.h glow.inl.h \
+ glowUtilities.inl.h

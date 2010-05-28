@@ -1,0 +1,5 @@
+glowScrollBarWidget.o glowScrollBarWidget.dep: glowScrollBarWidget.cpp glowHeader.h \
+ glowScrollBarWidget.h glowWidget.h glow.h glowSenderReceiver.h \
+ glowSenderReceiver.inl.h glowDebug.h glow.inl.h glowAux.h glowAux.inl.h \
+ glowUtilities.h glowUtilities.inl.h glowWidget.inl.h \
+ glowScrollBarWidget.inl.h

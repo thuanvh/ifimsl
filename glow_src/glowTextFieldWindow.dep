@@ -1,0 +1,8 @@
+glowTextFieldWindow.o glowTextFieldWindow.dep: glowTextFieldWindow.cpp glowHeader.h \
+ glowTextFieldWindow.h glowWidget.h glow.h glowSenderReceiver.h \
+ glowSenderReceiver.inl.h glowDebug.h glow.inl.h glowAux.h glowAux.inl.h \
+ glowUtilities.h glowUtilities.inl.h glowWidget.inl.h \
+ glowTextFieldWindow.inl.h glowPushButtonWidget.h \
+ glowPushButtonWidget.inl.h glowLabelWidget.h glowLabelWidget.inl.h \
+ glowTextFieldWidget.h glowTextData.h glowTextData.inl.h \
+ glowTextFieldWidget.inl.h

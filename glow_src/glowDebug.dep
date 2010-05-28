@@ -1,0 +1,1 @@
+glowDebug.o glowDebug.dep: glowDebug.cpp glowHeader.h glowDebug.h

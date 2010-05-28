@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="62">
+  <logicalFolder name="root" displayName="root" projectFiles="true">
+    <df name="glow_src" root=".">
+      <in>glow.cpp</in>
+      <in>glow.h</in>
+      <in>glow.inl.h</in>
+      <in>glowAux.cpp</in>
+      <in>glowAux.h</in>
+      <in>glowAux.inl.h</in>
+      <in>glowCheckBoxWidget.cpp</in>
+      <in>glowCheckBoxWidget.h</in>
+      <in>glowCheckBoxWidget.inl.h</in>
+      <in>glowDebug.cpp</in>
+      <in>glowDebug.h</in>
+      <in>glowHeader.h</in>
+      <in>glowLabelWidget.cpp</in>
+      <in>glowLabelWidget.h</in>
+      <in>glowLabelWidget.inl.h</in>
+      <in>glowMenuButtonWidget.cpp</in>
+      <in>glowMenuButtonWidget.h</in>
+      <in>glowMenuButtonWidget.inl.h</in>
+      <in>glowMessageWindow.cpp</in>
+      <in>glowMessageWindow.h</in>
+      <in>glowMessageWindow.inl.h</in>
+      <in>glowPanelWidget.cpp</in>
+      <in>glowPanelWidget.h</in>
+      <in>glowPanelWidget.inl.h</in>
+      <in>glowPushButtonWidget.cpp</in>
+      <in>glowPushButtonWidget.h</in>
+      <in>glowPushButtonWidget.inl.h</in>
+      <in>glowQuickPalette.cpp</in>
+      <in>glowQuickPalette.h</in>
+      <in>glowQuickPalette.inl.h</in>
+      <in>glowRadioButtonWidget.cpp</in>
+      <in>glowRadioButtonWidget.h</in>
+      <in>glowRadioButtonWidget.inl.h</in>
+      <in>glowRenderSwitch.cpp</in>
+      <in>glowRenderSwitch.h</in>
+      <in>glowRenderSwitch.inl.h</in>
+      <in>glowScrollBarWidget.cpp</in>
+      <in>glowScrollBarWidget.h</in>
+      <in>glowScrollBarWidget.inl.h</in>
+      <in>glowSenderReceiver.cpp</in>
+      <in>glowSenderReceiver.h</in>
+      <in>glowSenderReceiver.inl.h</in>
+      <in>glowSeparatorWidget.cpp</in>
+      <in>glowSeparatorWidget.h</in>
+      <in>glowSeparatorWidget.inl.h</in>
+      <in>glowSliderWidget.cpp</in>
+      <in>glowSliderWidget.h</in>
+      <in>glowSliderWidget.inl.h</in>
+      <in>glowTextData.cpp</in>
+      <in>glowTextData.h</in>
+      <in>glowTextData.inl.h</in>
+      <in>glowTextFieldWidget.cpp</in>
+      <in>glowTextFieldWidget.h</in>
+      <in>glowTextFieldWidget.inl.h</in>
+      <in>glowTextFieldWindow.cpp</in>
+      <in>glowTextFieldWindow.h</in>
+      <in>glowTextFieldWindow.inl.h</in>
+      <in>glowUtilities.cpp</in>
+      <in>glowUtilities.h</in>
+      <in>glowUtilities.inl.h</in>
+      <in>glowVectorAlgebra.cpp</in>
+      <in>glowVectorAlgebra.h</in>
+      <in>glowVectorAlgebra.inl.h</in>
+      <in>glowViewTransform.cpp</in>
+      <in>glowViewTransform.h</in>
+      <in>glowViewTransform.inl.h</in>
+      <in>glowWidget.cpp</in>
+      <in>glowWidget.h</in>
+      <in>glowWidget.inl.h</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false">
+      <itemPath>Makefile</itemPath>
+      <itemPath>Makefile-glow_src.mk</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile-glow_src.mk</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>$(MAKE) -f Makefile</buildCommand>
+          <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
+          <executablePath></executablePath>
+          <cTool>
+            <incDir>
+              <pElem>.</pElem>
+            </incDir>
+            <preprocessorList>
+              <Elem>GLOW_PLATFORM_LITTLEENDIAN</Elem>
+              <Elem>GLOW_PLATFORM_LINUX</Elem>
+              <Elem>GLOW_OPTION_DEBUG</Elem>
+            </preprocessorList>
+          </cTool>
+        </makeTool>
+      </makefileType>
+      <item path="glow.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowAux.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowCheckBoxWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowDebug.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowLabelWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowMenuButtonWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowMessageWindow.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowPanelWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowPushButtonWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowQuickPalette.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowRadioButtonWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowRenderSwitch.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowScrollBarWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowSenderReceiver.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowSeparatorWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowSliderWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowTextData.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowTextFieldWidget.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowTextFieldWindow.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowUtilities.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowVectorAlgebra.cpp" ex="false" tool="0">
+      </item>
+      <item path="glowViewTransform.cpp" ex="true" tool="1">
+      </item>
+      <item path="glowViewTransform.h" ex="true" tool="3">
+      </item>
+      <item path="glowViewTransform.inl.h" ex="true" tool="3">
+      </item>
+      <item path="glowWidget.cpp" ex="false" tool="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

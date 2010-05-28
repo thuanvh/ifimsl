@@ -1,0 +1,3 @@
+glowRenderSwitch.o glowRenderSwitch.dep: glowRenderSwitch.cpp glowHeader.h glowRenderSwitch.h \
+ glow.h glowSenderReceiver.h glowSenderReceiver.inl.h glowDebug.h \
+ glow.inl.h glowRenderSwitch.inl.h
