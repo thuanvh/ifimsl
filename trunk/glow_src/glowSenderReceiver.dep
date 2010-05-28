@@ -1,0 +1,2 @@
+glowSenderReceiver.o glowSenderReceiver.dep: glowSenderReceiver.cpp glowHeader.h \
+ glowSenderReceiver.h glowSenderReceiver.inl.h glowDebug.h

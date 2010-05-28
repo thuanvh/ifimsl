@@ -1,0 +1,2 @@
+glowTextData.o glowTextData.dep: glowTextData.cpp glowHeader.h glowTextData.h glowAux.h \
+ glowAux.inl.h glowDebug.h glowTextData.inl.h

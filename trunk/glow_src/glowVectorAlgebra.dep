@@ -1,0 +1,2 @@
+glowVectorAlgebra.o glowVectorAlgebra.dep: glowVectorAlgebra.cpp glowHeader.h \
+ glowVectorAlgebra.h glowVectorAlgebra.inl.h glowDebug.h

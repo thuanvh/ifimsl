@@ -1,0 +1,6 @@
+glowMessageWindow.o glowMessageWindow.dep: glowMessageWindow.cpp glowHeader.h \
+ glowMessageWindow.h glowWidget.h glow.h glowSenderReceiver.h \
+ glowSenderReceiver.inl.h glowDebug.h glow.inl.h glowAux.h glowAux.inl.h \
+ glowUtilities.h glowUtilities.inl.h glowWidget.inl.h \
+ glowMessageWindow.inl.h glowPushButtonWidget.h \
+ glowPushButtonWidget.inl.h glowLabelWidget.h glowLabelWidget.inl.h

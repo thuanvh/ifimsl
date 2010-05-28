@@ -1,0 +1,5 @@
+glowPushButtonWidget.o glowPushButtonWidget.dep: glowPushButtonWidget.cpp glowHeader.h \
+ glowPushButtonWidget.h glowWidget.h glow.h glowSenderReceiver.h \
+ glowSenderReceiver.inl.h glowDebug.h glow.inl.h glowAux.h glowAux.inl.h \
+ glowUtilities.h glowUtilities.inl.h glowWidget.inl.h \
+ glowPushButtonWidget.inl.h

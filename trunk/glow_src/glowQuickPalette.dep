@@ -1,0 +1,13 @@
+glowQuickPalette.o glowQuickPalette.dep: glowQuickPalette.cpp glowHeader.h glowQuickPalette.h \
+ glowWidget.h glow.h glowSenderReceiver.h glowSenderReceiver.inl.h \
+ glowDebug.h glow.inl.h glowAux.h glowAux.inl.h glowUtilities.h \
+ glowUtilities.inl.h glowWidget.inl.h glowCheckBoxWidget.h \
+ glowCheckBoxWidget.inl.h glowPanelWidget.h glowPanelWidget.inl.h \
+ glowLabelWidget.h glowLabelWidget.inl.h glowMenuButtonWidget.h \
+ glowMenuButtonWidget.inl.h glowPushButtonWidget.h \
+ glowPushButtonWidget.inl.h glowRadioButtonWidget.h \
+ glowRadioButtonWidget.inl.h glowScrollBarWidget.h \
+ glowScrollBarWidget.inl.h glowSeparatorWidget.h \
+ glowSeparatorWidget.inl.h glowSliderWidget.h glowSliderWidget.inl.h \
+ glowTextFieldWidget.h glowTextData.h glowTextData.inl.h \
+ glowTextFieldWidget.inl.h glowQuickPalette.inl.h
