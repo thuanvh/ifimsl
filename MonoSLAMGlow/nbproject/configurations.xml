@@ -2,10 +2,17 @@
 <configurationDescriptor version="62">
   <logicalFolder name="root" displayName="root" projectFiles="true">
     <df name="MonoSLAMGlow" root=".">
+      <in>main.h</in>
       <in>mainglow.cpp</in>
       <in>mainglow.h</in>
+      <in>monoslamMRPT3DScene.cpp</in>
+      <in>monoslamMRPT3DScene.h</in>
+      <in>monoslamSettings.cpp</in>
+      <in>monoslamSettings.h</in>
       <in>monoslamglow.cpp</in>
       <in>monoslamglow.h</in>
+      <in>monoslamlog.cpp</in>
+      <in>monoslamlog.h</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -30,7 +37,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>$(MAKE) -f Makefile</buildCommand>
           <cleanCommand>$(MAKE) -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>./monoslam</executablePath>
           <ccTool>
             <incDir>
               <pElem>../glow_104/glow_src</pElem>

@@ -1,7 +1,7 @@
 /*  MonoSLAM: Real-Time Single Camera SLAM
 
     MonoSLAMGlow/monoslamglow.cpp
-    Copyright (C) 2005 University of Oxford 
+    Copyright (C) 2005 University of Oxford
 
     Author
     Andrew Davison
@@ -25,11 +25,12 @@
 #include "main.h"
 #include "monoslamSettings.h"
 #include <unistd.h>
-#include "MonoSLAM/robot.h" 
+#include "MonoSLAM/robot.h"
 #include "MonoSLAM/threeddraw.h"
 #include "MonoSLAM/model_creators.h"
 #include "monoslamglow.h"
 #include "monoslamMRPT3DScene.h"
+#include "monoslamlog.h"
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -50,12 +51,17 @@ STANDARD_DEVIATION_DEPTH_RATIO(mns.STANDARD_DEVIATION_DEPTH_RATIO),
 MIN_NUMBER_OF_PARTICLES(mns.MIN_NUMBER_OF_PARTICLES),
 PRUNE_PROBABILITY_THRESHOLD(mns.PRUNE_PROBABILITY_THRESHOLD),
 ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS(mns.ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS) {
+  //monoslamStateFile=new char[mns.monoslamStateFile.length()];
+  //strcpy(mns.monoslamStateFile.c_str(),monoslamStateFile);
+  monoslamStateFile=mns.monoslamStateFile;
+
   // Set up the main MonoSLAM class object
   SetUpMonoSLAM();
 
   // Reset counters
   output_tracked_image_number = 0;
   output_raw_image_number = 0;
+
 
   // Initialise GlowWindow
   // Set big size because this will be reshaped later
@@ -73,14 +79,21 @@ ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS(mns.ERASE_PARTIALLY_INIT_F
 
   // Out to 3DScene
   this->mrpt3dScene = new monoslamMRPT3DScene();
+
   //System::IO::Directory::CreateDirectory(argv[2]);
   if (mkdir(argv[2], 0777) == -1) { // Create the directory
-    std::cerr << "Error: " << argv[2];    
+    std::cerr << "Error: " << argv[2];
   }
 
   string sceneoutput(argv[2]);
   this->mrpt3dScene->setSceneDirPath(sceneoutput);
   this->mrpt3dScene->setScene(monoslaminterface->GetScene());
+  //this->mrpt3dScene->setWindow(mrptwindows);
+
+  this->monoslamLog=new monoslamlog();
+  monoslamLog->logDirPath=string(sceneoutput)+".log";
+  monoslamLog->setScene(monoslaminterface->GetScene());
+  monoslamLog->initLog();
 
   Reshape(controlpanel1->Width() + controlpanel2->Width() +
           threedtool->Width(), threedtool->Height() +
@@ -92,8 +105,9 @@ void MonoSLAMGlow::SetUpMonoSLAM() {
   MonoSLAM_Motion_Model_Creator mm_creator;
   MonoSLAM_Feature_Measurement_Model_Creator fmm_creator;
 
+  //"monoslam_state.ini",
   monoslaminterface =
-          new MonoSLAMInterface("monoslam_state.ini",
+          new MonoSLAMInterface(monoslamStateFile.c_str(),
           &mm_creator,
           &fmm_creator,
           NULL, // no internal measurement models used here
@@ -226,6 +240,7 @@ void MonoSLAMGlow::SetUp3DDisplays() {
   threedtool->ProcessHitsEvent.Attach(this, &MonoSLAMGlow::ProcessHits);
   threedtool->SetCameraParameters(Graphics_Fku, Graphics_Fkv,
           Graphics_U0, Graphics_V0);
+
 
   // Set start position for GL camera in 3D tool
   // This is x, y, z position
@@ -404,15 +419,11 @@ void MonoSLAMGlow::OnMessage(const GlowCheckBoxMessage& message) {
     assert(0);
 }
 
-
-
-
-
 // Drawing function which will be registered with 3D tool
 
 void MonoSLAMGlow::Draw3D(bool select_flag) {
   mutex.Lock();
-  //  cout << "Timer on entering Draw3D: " << monoslaminterface->GetTimer1() 
+  //  cout << "Timer on entering Draw3D: " << monoslaminterface->GetTimer1()
   //    << endl;
 
   if (DEBUGDUMP) cout << "Drawing function for 3D display." << endl;
@@ -428,7 +439,7 @@ void MonoSLAMGlow::Draw3D(bool select_flag) {
           display_3d_features_button->GetState(),
           0);
 
-  // cout << "Timer on leaving Draw3D: " << monoslaminterface->GetTimer1() 
+  // cout << "Timer on leaving Draw3D: " << monoslaminterface->GetTimer1()
   //   << endl;
   mutex.Unlock();
 }
@@ -454,7 +465,7 @@ void MonoSLAMGlow::ProcessHits(int selected_item,
 
 void MonoSLAMGlow::ImageDraw3D(bool select_flag) {
   mutex.Lock();
-  // cout << "Timer on entering ImageDraw3D: " 
+  // cout << "Timer on entering ImageDraw3D: "
   // << monoslaminterface->GetTimer1() << endl;
 
   if (DEBUGDUMP) cout << "Drawing function for Image display." << endl;
@@ -495,7 +506,7 @@ void MonoSLAMGlow::ImageDraw3D(bool select_flag) {
             monoslaminterface->GetInitFeatureSearchVFinish());
   }
 
-  // cout << "Timer on leaving ImageDraw3D: " << monoslaminterface->GetTimer1() 
+  // cout << "Timer on leaving ImageDraw3D: " << monoslaminterface->GetTimer1()
   //      << endl;
   mutex.Unlock();
 }
@@ -527,7 +538,7 @@ void MonoSLAMGlow::ImageProcessHits(int selected_item,
 
 void MonoSLAMGlow::SaveRawImage() {
   char filename[100];
-  sprintf(filename, "rawoutput%04d.pgm", output_raw_image_number++);
+  sprintf(filename, "rawoutput%04d.ppm", output_raw_image_number++);
   grabbed_image->WriteImage(filename);
   sync();
   if (Scene_Single::STATUSDUMP)
@@ -628,8 +639,10 @@ void MonoSLAMGlow::HandleNewFrameGlow(int frame_number) {
   // Save 3D scene
 
   //this->mrpt3dScene->setStep(frame_number);
+  //cout<<"before"<<endl;
   this->mrpt3dScene->writeMRPT3DScene();
-  cout << "Step scene " << frame_number << " - " << this->mrpt3dScene->getStep() << endl;
+  //cout << "Step scene " << frame_number << " - " << this->mrpt3dScene->getStep() << endl;
+  this->monoslamLog->saveLog();
 }
 
 void MonoSLAMGlow::UpdateDisplayParameters() {
@@ -666,7 +679,7 @@ void MonoSLAMGlow::InitialiseFeatureGlow() {
 }
 
 void MonoSLAMGlow::AutoInitialiseFeatureGlow() {
-  // Zero u here 
+  // Zero u here
   VNL::Vector<double> u(3);
   u.Fill(0.0);
 

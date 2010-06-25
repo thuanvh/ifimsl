@@ -34,7 +34,9 @@ void MonoslamSettings::readSettings(const char* file) {
     string strValue = a.substr(pos + 1);
 
     std::remove(abc.begin(), abc.end(), ' ');
-    std::remove(strValue.begin(), strValue.end(), ' ');
+    std::string::iterator ptr=std::remove(strValue.begin(), strValue.end(), ' ');
+    strValue.erase(ptr,strValue.end());
+    
     cout << abc << strValue;
     
     if (abc.compare("delta_t") == 0) {
@@ -80,6 +82,9 @@ void MonoslamSettings::readSettings(const char* file) {
     if (abc.compare("ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS") == 0) {
       ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS = atoi(strValue.c_str());
       continue;
+    }
+    if(abc.compare("monoslam_state_file")==0){
+      monoslamStateFile=strValue;
     }
   }
   file_op.close();

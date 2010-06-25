@@ -35,7 +35,8 @@ class monoslamMRPT3DScene {
 public:
 
     monoslamMRPT3DScene();
-    void writeMRPT3DScene();
+    CPose3D getRobotState();
+    COpenGLScenePtr writeMRPT3DScene();
 
     const Scene_Single* getScene() const {
         return scene;
@@ -60,6 +61,9 @@ public:
     void setStep(int step) {
         this->step = step;
     }
+    void setWindow(CDisplayWindow3D* windows){
+        mrptwindows=windows;
+    }
 //
 //    void setLastRobotPosition(VNL::Vector<double> a){
 //        for(int i=0; i<a.size(); i++)
@@ -74,6 +78,8 @@ protected:
 //    VNL::Vector<double> lastRobotPosition;
     CPose3D lastRobotPosition;
     bool isSceneStart;
+
+    CDisplayWindow3D* mrptwindows;
 };
 
 #endif	/* _MONOSLAMMRPT3DSCENE_H */
