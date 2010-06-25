@@ -20,13 +20,13 @@ SCENELIBS =	-L$(SCENEBASEDIR)/lib -lMonoSLAM -lSceneImproc -lScene
 SCENEHEADERS = 	-I$(SCENEBASEDIR)/include
 #MRPTLIBS
 MRPTLIBS = -lmrpt-core
-MRPTINC= -I/usr/include/mrpt/mrpt-config
+MRPTINC= -I/usr/include/mrpt/mrpt-config -I/usr/include/wx-2.6
 # Target executable
 EXECUTABLE = monoslam
 
 #---Uncomment -D_REALTIME_ to compile realtime version (make clean
 #---if you have changed this)
-CFLAGS = $(GLOWHEADERS) $(VWHEADERS) $(SCENEHEADERS) $(MRPTINC) -Wall -D$(OS) -D$(ARCH) -D_REENTRANT -O3 -g #-D_REALTIME_
+CFLAGS = $(GLOWHEADERS) $(VWHEADERS) $(SCENEHEADERS) $(MRPTINC) `wx-config --libs` `wx-config --cxxflags` -Wall -D$(OS) -D$(ARCH) -D_REENTRANT -O3 -g #-D_REALTIME_
 
 #--- Comment out $(FIREWIRELIBS) to compile on a machine without firewire
 #--- libraries installed (for off-line mode only of course)
@@ -34,7 +34,7 @@ CFLAGS = $(GLOWHEADERS) $(VWHEADERS) $(SCENEHEADERS) $(MRPTINC) -Wall -D$(OS) -D
 LINKFLAGS = $(SCENELIBS) $(VWLIBS) $(GLOWLIBS) $(GLLIBS) -Wall -O2 $(PTHREADLIBS) $(MATHSLIBS) $(FIREWIRELIBS) $(MRPTLIBS)
 
 # Source files
-CPPFILES = mainglow.cpp monoslamglow.cpp monoslamMRPT3DScene.cpp monoslamSettings.cpp
+CPPFILES = mainglow.cpp monoslamglow.cpp monoslamMRPT3DScene.cpp monoslamSettings.cpp monoslamlog.cpp
 # Object files
 OFILES = $(addsuffix .o,$(basename $(CPPFILES)))
 

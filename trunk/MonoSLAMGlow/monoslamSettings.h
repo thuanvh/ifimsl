@@ -7,7 +7,7 @@
 
 #ifndef _MONOSLAMSETTINGS_H
 #define	_MONOSLAMSETTINGS_H
-
+#include <iostream>
 class MonoslamSettings {
 public:
     MonoslamSettings();
@@ -22,6 +22,7 @@ public:
     unsigned int MIN_NUMBER_OF_PARTICLES;
     double PRUNE_PROBABILITY_THRESHOLD;
     unsigned int ERASE_PARTIALLY_INIT_FEATURE_AFTER_THIS_MANY_ATTEMPTS;
+    std::string monoslamStateFile;
     void readSettings(const char* file);
 };
 //    double delta_t = 1.0 / 30.0;

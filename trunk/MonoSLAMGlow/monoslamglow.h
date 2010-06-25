@@ -29,6 +29,7 @@
 #define _monoslam_monoslamglow_h_
 #include "main.h"
 #include "monoslamMRPT3DScene.h"
+#include "monoslamlog.h"
 #include "monoslamSettings.h"
 #include <glow.h>
 #include <glowQuickPalette.h>
@@ -59,6 +60,7 @@ public VWEvents::EventHandler,
 public GlowPushButtonReceiver,
 public GlowCheckBoxReceiver {
 public:
+    //MonoSLAMGlow(int argc, char* argv[], MonoslamSettings mns, CDisplayWindow3D* mrptwindows);
     MonoSLAMGlow(int argc, char* argv[], MonoslamSettings mns);
 
     virtual ~MonoSLAMGlow() {
@@ -202,6 +204,10 @@ protected:
 
     // 3D Mrpt Scene
     monoslamMRPT3DScene* mrpt3dScene;
+    std::string monoslamStateFile;
+
+    // Monoslam Log
+    monoslamlog* monoslamLog;
 };
 
 #endif

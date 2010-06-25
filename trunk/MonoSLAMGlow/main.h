@@ -8,7 +8,13 @@
 #ifndef _MAIN_H
 #define	_MAIN_H
 #include <mrpt/core.h>
-#include "Scene/scene_single.h"
 
+
+//using namespace mrpt;
+//using namespace mrpt::slam;
+//using namespace mrpt::opengl;
+//using namespace mrpt::gui;
+#include "Scene/scene_single.h"
+//CDisplayWindow3D* win;
 #endif	/* _MAIN_H */
 
